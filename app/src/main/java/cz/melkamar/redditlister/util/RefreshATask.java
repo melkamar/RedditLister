@@ -1,7 +1,6 @@
 package cz.melkamar.redditlister.util;
 
 import android.os.AsyncTask;
-import cz.melkamar.redditlister.MainActivity;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;

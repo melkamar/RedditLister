@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context="cz.melkamar.redditlister.MainActivity">
+        tools:context="cz.melkamar.redditlister.activities.MainActivity">
 
     <android.support.v7.widget.Toolbar
             android:id="@+id/main_toolbar"
@@ -19,14 +19,19 @@
             app:layout_constraintTop_toTopOf="parent" tools:layout_editor_absoluteX="0dp"/>
 
     <FrameLayout android:layout_width="match_parent" android:layout_height="match_parent">
-        <ScrollView android:layout_width="match_parent" android:layout_height="match_parent">
-            <TextView
-                    android:id="@+id/tv_content"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="\n\n\n\n\n\n\nHello World!"
-                    android:textAlignment="center"/>
-        </ScrollView>
+        <!--<ScrollView android:layout_width="match_parent" android:layout_height="match_parent">-->
+        <!--<TextView-->
+        <!--android:id="@+id/tv_content"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:text="\n\n\n\n\n\n\nHello World!"-->
+        <!--android:textAlignment="center"/>-->
+        <!--</ScrollView>-->
+        <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/rv_content"
+                android:scrollbars="vertical"/>
     </FrameLayout>
 
 </LinearLayout>

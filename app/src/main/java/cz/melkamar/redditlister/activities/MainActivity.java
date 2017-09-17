@@ -1,24 +1,25 @@
-package cz.melkamar.redditlister;
+package cz.melkamar.redditlister.activities;
 
+import adapters.PostAdapter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.support.v7.widget.*;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
-import butterknife.ButterKnife;
+import cz.melkamar.redditlister.R;
 import cz.melkamar.redditlister.util.RedditJsonParser;
 import cz.melkamar.redditlister.util.RefreshATask;
+import model.Post;
 import org.json.JSONException;
 
-import java.util.logging.Logger;
+import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements RefreshATask.RefreshTaskListener {
+public class MainActivity extends AppCompatActivity implements RefreshATask.RefreshTaskListener,
+        PostAdapter.ListItemClickListener {
 
-    @BindView(R.id.tv_content)
     TextView content;
 
     @Override
@@ -32,7 +33,21 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
 //        ButterKnife.setDebug(true);
 //        ButterKnife.bind(this);
 //        Log.w("onCreate", "" + content);
-        content = findViewById(R.id.tv_content);
+//        content = findViewById(R.id.tv_content);
+
+        ArrayList<Post> data = new ArrayList<>();
+        for (int i = 0; i < 100; i++)
+            data.add(new Post("" + i, null));
+
+
+        RecyclerView rv = findViewById(R.id.rv_content);
+        LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        rv.setLayoutManager(manager);
+
+        DividerItemDecoration divider = new DividerItemDecoration(rv.getContext(), manager.getOrientation());
+        rv.addItemDecoration(divider);
+
+        rv.setAdapter(new PostAdapter(data, this));
     }
 
     @Override
@@ -68,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
             String[] titles = RedditJsonParser.parseJson(responseBody);
             content.setText("");
             for (String str : titles) {
-                if (content.getText().length() != 0){
+                if (content.getText().length() != 0) {
                     content.append("\n---\n");
                 }
                 content.append(str);
@@ -77,5 +92,17 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
             e.printStackTrace();
             content.setText("Failed parsing or something.");
         }
+    }
+
+
+    Toast toast = null;
+    @Override
+    public void onListItemClick(Post post) {
+        if (toast!=null){
+            toast.cancel();
+        }
+
+        toast = Toast.makeText(this, post.getTitle(), Toast.LENGTH_SHORT);
+        toast.show();
     }
 }
