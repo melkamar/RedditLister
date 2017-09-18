@@ -31,11 +31,11 @@ public class RefreshATask extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String s) {
-        listener.onFinished(s);
+        listener.onRefreshFinished(s);
     }
 
     public interface RefreshTaskListener {
-        void onFinished(String responseBody);
+        void onRefreshFinished(String responseBody);
     }
 
     private static String getHttp(String url) throws IOException {

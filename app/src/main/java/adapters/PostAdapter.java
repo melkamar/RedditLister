@@ -67,4 +67,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     public interface ListItemClickListener {
         void onListItemClick(Post post);
     }
+
+    public void swap(List<Post> newData) {
+        data.clear();
+        data.addAll(newData);
+        this.notifyDataSetChanged();
+    }
 }

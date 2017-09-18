@@ -1,5 +1,6 @@
 package cz.melkamar.redditlister.util;
 
+import model.Post;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,15 +10,16 @@ import org.json.JSONObject;
  */
 
 public class RedditJsonParser {
-    public static String[] parseJson(String json) throws JSONException {
+    public static Post[] parseJson(String json) throws JSONException {
         JSONObject jsonObject = new JSONObject(json);
         JSONArray posts = jsonObject.getJSONObject("data").getJSONArray("children");
 
-        String[] result = new String[posts.length()];
+        Post[] result = new Post[posts.length()];
 
         for (int i = 0; i < posts.length(); i++) {
             JSONObject postData = posts.getJSONObject(i).getJSONObject("data");
-            result[i] = postData.getString("title");
+            String title = postData.getString("title");
+            result[i] = new Post(title, null);
         }
 
         return result;

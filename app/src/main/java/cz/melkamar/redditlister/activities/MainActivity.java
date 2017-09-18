@@ -16,11 +16,13 @@ import model.Post;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity implements RefreshATask.RefreshTaskListener,
         PostAdapter.ListItemClickListener {
 
-    TextView content;
+    RecyclerView rv;
+    PostAdapter postAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,14 +42,15 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
             data.add(new Post("" + i, null));
 
 
-        RecyclerView rv = findViewById(R.id.rv_content);
+        rv = findViewById(R.id.rv_content);
         LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         rv.setLayoutManager(manager);
 
         DividerItemDecoration divider = new DividerItemDecoration(rv.getContext(), manager.getOrientation());
         rv.addItemDecoration(divider);
 
-        rv.setAdapter(new PostAdapter(data, this));
+        postAdapter = new PostAdapter(data, this);
+        rv.setAdapter(postAdapter);
     }
 
     @Override
@@ -78,31 +81,31 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
     }
 
     @Override
-    public void onFinished(String responseBody) {
+    public void onRefreshFinished(String responseBody) {
         try {
-            String[] titles = RedditJsonParser.parseJson(responseBody);
-            content.setText("");
-            for (String str : titles) {
-                if (content.getText().length() != 0) {
-                    content.append("\n---\n");
-                }
-                content.append(str);
-            }
+
+            Post[] posts = RedditJsonParser.parseJson(responseBody);
+            postAdapter.swap(Arrays.asList(posts));
         } catch (JSONException e) {
             e.printStackTrace();
-            content.setText("Failed parsing or something.");
+            showToast("Failed parsing or something.");
         }
     }
 
 
     Toast toast = null;
-    @Override
-    public void onListItemClick(Post post) {
-        if (toast!=null){
+
+    protected void showToast(String text) {
+        if (toast != null) {
             toast.cancel();
         }
 
-        toast = Toast.makeText(this, post.getTitle(), Toast.LENGTH_SHORT);
+        toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
         toast.show();
+    }
+
+    @Override
+    public void onListItemClick(Post post) {
+        showToast(post.getTitle());
     }
 }
