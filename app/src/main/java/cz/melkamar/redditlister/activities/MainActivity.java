@@ -1,6 +1,8 @@
 package cz.melkamar.redditlister.activities;
 
 import adapters.PostAdapter;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -104,6 +106,11 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
 
     @Override
     public void onExtPostTitleClick(ExternalPost post) {
-        showToast("[ext] " + post.getTitle());
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(post.getUrl()));
+        if (intent.resolveActivity(getPackageManager())!=null){
+            startActivity(intent);
+        } else {
+            showToast("Sorry, no app installed for opening webpages.");
+        }
     }
 }
