@@ -4,7 +4,7 @@ package model;
  * Created by Martin Melka (martin.melka@gmail.com) on 17.09.2017 12:34.
  */
 
-public class Post {
+public abstract class Post {
     String title;
     String url;
 
@@ -20,5 +20,7 @@ public class Post {
     public String getUrl() {
         return url;
     }
+
+    public abstract int getType();
 
 }

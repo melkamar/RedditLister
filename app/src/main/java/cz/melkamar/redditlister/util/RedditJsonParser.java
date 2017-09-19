@@ -1,6 +1,8 @@
 package cz.melkamar.redditlister.util;
 
+import model.ExternalPost;
 import model.Post;
+import model.SelfPost;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,7 +21,12 @@ public class RedditJsonParser {
         for (int i = 0; i < posts.length(); i++) {
             JSONObject postData = posts.getJSONObject(i).getJSONObject("data");
             String title = postData.getString("title");
-            result[i] = new Post(title, null);
+            String selfText = postData.getString("selftext");
+            if (selfText.isEmpty()){
+                result[i] = new ExternalPost(title, postData.getString("url"));
+            } else {
+                result[i] = new SelfPost(title, postData.getString("url"));
+            }
         }
 
         return result;

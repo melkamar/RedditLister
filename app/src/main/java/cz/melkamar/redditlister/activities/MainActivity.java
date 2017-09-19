@@ -3,16 +3,19 @@ package cz.melkamar.redditlister.activities;
 import adapters.PostAdapter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.*;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 import android.widget.Toast;
-import butterknife.BindView;
 import cz.melkamar.redditlister.R;
 import cz.melkamar.redditlister.util.RedditJsonParser;
 import cz.melkamar.redditlister.util.RefreshATask;
+import model.ExternalPost;
 import model.Post;
+import model.SelfPost;
 import org.json.JSONException;
 
 import java.util.ArrayList;
@@ -23,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
 
     RecyclerView rv;
     PostAdapter postAdapter;
+    Toast toast = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,14 +36,11 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
         Toolbar toolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
 
-//        ButterKnife.setDebug(true);
-//        ButterKnife.bind(this);
-//        Log.w("onCreate", "" + content);
-//        content = findViewById(R.id.tv_content);
-
         ArrayList<Post> data = new ArrayList<>();
-        for (int i = 0; i < 100; i++)
-            data.add(new Post("" + i, null));
+        for (int i = 0; i < 100; i++) {
+            data.add(new SelfPost("" + (i * 2), null));
+            data.add(new ExternalPost("" + ((i + 1) * 2), null));
+        }
 
 
         rv = findViewById(R.id.rv_content);
@@ -93,8 +94,6 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
     }
 
 
-    Toast toast = null;
-
     protected void showToast(String text) {
         if (toast != null) {
             toast.cancel();
@@ -105,7 +104,12 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
     }
 
     @Override
-    public void onListItemClick(Post post) {
-        showToast(post.getTitle());
+    public void onSelfPostClick() {
+        showToast("Self post");
+    }
+
+    @Override
+    public void onExternPostClick() {
+        showToast("External post");
     }
 }
