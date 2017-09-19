@@ -1,6 +1,5 @@
 package viewholders;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 import cz.melkamar.redditlister.R;
@@ -31,10 +30,10 @@ public class SelfpostViewHolder extends PostViewHolder {
 
     @Override
     public void onClick(View view) {
-        listener.onSelfPostClick();
+        listener.onSelfPostClick(getAdapterPosition());
     }
 
     public interface SelfpostClickListener {
-        void onSelfPostClick();
+        void onSelfPostClick(int index);
     }
 }

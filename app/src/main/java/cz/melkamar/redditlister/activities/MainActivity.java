@@ -98,12 +98,12 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
     }
 
     @Override
-    public void onSelfPostClick() {
-        showToast("Self post");
+    public void onSelfPostTitleClick(SelfPost post) {
+        showToast("[self] " + post.getTitle());
     }
 
     @Override
-    public void onExternPostClick() {
-        showToast("External post");
+    public void onExtPostTitleClick(ExternalPost post) {
+        showToast("[ext] " + post.getTitle());
     }
 }

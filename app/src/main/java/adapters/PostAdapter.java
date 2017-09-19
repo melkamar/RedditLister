@@ -5,7 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import cz.melkamar.redditlister.R;
+import model.ExternalPost;
 import model.Post;
+import model.SelfPost;
 import viewholders.ExternPostViewHolder;
 import viewholders.PostViewHolder;
 import viewholders.SelfpostViewHolder;
@@ -61,13 +63,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder>
     }
 
     @Override
-    public void onSelfPostClick() {
-        clickListener.onSelfPostClick();
+    public void onSelfPostClick(int index) {
+        clickListener.onSelfPostTitleClick((SelfPost) data.get(index));
     }
 
     @Override
-    public void onExternPostClick() {
-        clickListener.onExternPostClick();
+    public void onExternPostClick(int index) {
+        clickListener.onExtPostTitleClick((ExternalPost) data.get(index));
     }
 
     public void swap(List<Post> newData) {
@@ -76,9 +78,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder>
         this.notifyDataSetChanged();
     }
 
-    public interface ListItemClickListener extends
-            ExternPostViewHolder.ExternpostClickListener,
-            SelfpostViewHolder.SelfpostClickListener {
+    public interface ListItemClickListener {
+        void onSelfPostTitleClick(SelfPost post);
+
+        void onExtPostTitleClick(ExternalPost post);
     }
 
 

@@ -33,10 +33,10 @@ public class ExternPostViewHolder extends PostViewHolder {
 
     @Override
     public void onClick(View view) {
-        listener.onExternPostClick();
+        listener.onExternPostClick(getAdapterPosition());
     }
 
     public interface ExternpostClickListener {
-        void onExternPostClick();
+        void onExternPostClick(int index);
     }
 }
