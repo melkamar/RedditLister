@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
 
             Post[] posts = RedditJsonParser.parseJson(responseBody);
             postAdapter.swap(Arrays.asList(posts));
+            ((LinearLayoutManager) rv.getLayoutManager()).scrollToPositionWithOffset(0, 0);
         } catch (JSONException e) {
             e.printStackTrace();
             showSnackbar("Failed parsing or something.");
@@ -102,14 +103,14 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
     @Override
     public void onSelfPostTitleClick(SelfPost post) {
         Intent intent = new Intent(this, SelfPostDetailActivity.class);
+        intent.putExtra("post", post);
         startActivity(intent);
-        showSnackbar(post.getTitle());
     }
 
     @Override
     public void onExtPostTitleClick(ExternalPost post) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(post.getUrl()));
-        if (intent.resolveActivity(getPackageManager())!=null){
+        if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         } else {
             showSnackbar("Sorry, no app installed for opening webpages.");

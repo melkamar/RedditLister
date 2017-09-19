@@ -25,7 +25,9 @@ public class RedditJsonParser {
             if (selfText.isEmpty()){
                 result[i] = new ExternalPost(title, postData.getString("url"));
             } else {
-                result[i] = new SelfPost(title, postData.getString("url"));
+                result[i] = new SelfPost(title,
+                                         postData.getString("url"),
+                                         postData.getString("selftext"));
             }
         }
 

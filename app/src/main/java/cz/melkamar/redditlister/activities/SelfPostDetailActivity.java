@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import cz.melkamar.redditlister.R;
+import model.SelfPost;
 
 public class SelfPostDetailActivity extends AppCompatActivity {
 
@@ -18,10 +19,12 @@ public class SelfPostDetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
+        final SelfPost post = getIntent().getExtras().getParcelable("post");
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, post.getTitle(), Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
