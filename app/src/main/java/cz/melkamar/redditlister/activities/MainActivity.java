@@ -36,13 +36,6 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
         Toolbar toolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
 
-        ArrayList<Post> data = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            data.add(new SelfPost("" + (i * 2), null));
-            data.add(new ExternalPost("" + ((i + 1) * 2), null));
-        }
-
-
         rv = findViewById(R.id.rv_content);
         LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         rv.setLayoutManager(manager);
@@ -50,8 +43,9 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
         DividerItemDecoration divider = new DividerItemDecoration(rv.getContext(), manager.getOrientation());
         rv.addItemDecoration(divider);
 
-        postAdapter = new PostAdapter(data, this);
+        postAdapter = new PostAdapter(new ArrayList<Post>(0), this);
         rv.setAdapter(postAdapter);
+        refreshContent();
     }
 
     @Override
