@@ -4,6 +4,7 @@ import adapters.PostAdapter;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -95,13 +96,18 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
             toast.cancel();
         }
 
-        toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
-        toast.show();
+//        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                .setAction("Action", null).show();
+        Snackbar.make(findViewById(R.id.rv_content), text, Snackbar.LENGTH_LONG);
+//        toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+//        toast.show();
     }
 
     @Override
     public void onSelfPostTitleClick(SelfPost post) {
-        showToast("[self] " + post.getTitle());
+//        Intent intent = new Intent(this, SelfPostDetailActivity.class);
+//        startActivity(intent);
+        showToast(post.getTitle());
     }
 
     @Override
