@@ -86,28 +86,24 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
             postAdapter.swap(Arrays.asList(posts));
         } catch (JSONException e) {
             e.printStackTrace();
-            showToast("Failed parsing or something.");
+            showSnackbar("Failed parsing or something.");
         }
     }
 
 
-    protected void showToast(String text) {
+    protected void showSnackbar(String text) {
         if (toast != null) {
             toast.cancel();
         }
 
-//        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                .setAction("Action", null).show();
-        Snackbar.make(findViewById(R.id.rv_content), text, Snackbar.LENGTH_LONG);
-//        toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
-//        toast.show();
+        Snackbar.make(findViewById(R.id.rv_content), text, Snackbar.LENGTH_LONG).show();
     }
 
     @Override
     public void onSelfPostTitleClick(SelfPost post) {
-//        Intent intent = new Intent(this, SelfPostDetailActivity.class);
-//        startActivity(intent);
-        showToast(post.getTitle());
+        Intent intent = new Intent(this, SelfPostDetailActivity.class);
+        startActivity(intent);
+        showSnackbar(post.getTitle());
     }
 
     @Override
@@ -116,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
         if (intent.resolveActivity(getPackageManager())!=null){
             startActivity(intent);
         } else {
-            showToast("Sorry, no app installed for opening webpages.");
+            showSnackbar("Sorry, no app installed for opening webpages.");
         }
     }
 }
