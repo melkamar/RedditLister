@@ -1,5 +1,6 @@
 package model;
 
+import android.os.Parcel;
 import cz.melkamar.redditlister.R;
 
 /**
@@ -11,8 +12,35 @@ public class ExternalPost extends Post {
         super(title, url);
     }
 
+    protected ExternalPost(Parcel in) {
+        super(in.readString(), in.readString());
+    }
+
     @Override
     public int getType() {
         return R.id.post_external;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(title);
+        parcel.writeString(url);
+    }
+
+    public static final Creator<ExternalPost> CREATOR = new Creator<ExternalPost>() {
+        @Override
+        public ExternalPost createFromParcel(Parcel in) {
+            return new ExternalPost(in);
+        }
+
+        @Override
+        public ExternalPost[] newArray(int size) {
+            return new ExternalPost[size];
+        }
+    };
 }

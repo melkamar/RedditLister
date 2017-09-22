@@ -1,10 +1,14 @@
 package model;
 
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
 /**
  * Created by Martin Melka (martin.melka@gmail.com) on 17.09.2017 12:34.
  */
 
-public abstract class Post {
+public abstract class Post implements Parcelable {
     String title;
     String url;
 

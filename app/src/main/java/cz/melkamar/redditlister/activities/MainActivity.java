@@ -10,6 +10,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -23,6 +24,7 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements RefreshATask.RefreshTaskListener,
         PostAdapter.ListItemClickListener {
@@ -30,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
     RecyclerView rv;
     PostAdapter postAdapter;
     Toast toast = null;
+    ArrayList<Post> posts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +51,20 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
 
         postAdapter = new PostAdapter(new ArrayList<Post>(0), this);
         rv.setAdapter(postAdapter);
-        refreshContent();
+
+        Log.d("savedInstanceState", (savedInstanceState != null) + "");
+        if (savedInstanceState == null) {
+            refreshContent();
+        } else {
+            posts = savedInstanceState.getParcelableArrayList("posts");
+            postAdapter.swap(posts);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("posts", posts);
     }
 
     @Override
@@ -66,6 +82,9 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
                 break;
             case R.id.btn_about:
                 Toast.makeText(this, "Made by zmrd", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.btn_settings:
+                startActivity(new Intent(MainActivity.this, SettingsActivity.class));
                 break;
             default:
                 break;
@@ -109,11 +128,15 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
 
     @Override
     public void onExtPostTitleClick(ExternalPost post) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(post.getUrl()));
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
-        } else {
-            showSnackbar("Sorry, no app installed for opening webpages.");
-        }
+//        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(post.getUrl()));
+//        if (intent.resolveActivity(getPackageManager()) != null) {
+//            startActivity(intent);
+//        } else {
+//            showSnackbar("Sorry, no app installed for opening webpages.");
+//        }
+
+        Intent intent = new Intent(this, SelfPostDetailActivity.class);
+        intent.putExtra("post", "something");
+        startActivity(intent);
     }
 }
