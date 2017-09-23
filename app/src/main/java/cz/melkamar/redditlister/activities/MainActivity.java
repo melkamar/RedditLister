@@ -38,9 +38,11 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
     Toast toast = null;
     ArrayList<Post> posts;
 
+    /*
+     *
+     */
     private SharedPreferences prefMgr;
     private boolean nowRefreshing = false;
-
     boolean selfPostsIncludedInList = true;
 
     @Override
@@ -63,13 +65,17 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
         postAdapter = new PostAdapter(new ArrayList<Post>(0), this);
         rv.setAdapter(postAdapter);
 
-        Log.d("savedInstanceState", (savedInstanceState != null) + "");
+        Log.d("savedState:", savedInstanceState+"");
         if (savedInstanceState == null) {
             refreshContent();
         } else {
             posts = savedInstanceState.getParcelableArrayList("posts");
-            if (posts != null) {
+            Log.d("sSaved posts: ", posts == null ? "null" : posts.toString());
+            if (posts != null && !posts.isEmpty()) {
                 postAdapter.swap(posts);
+            } else {
+                Log.d("sSaved posts: ", "empty, refreshing...");
+                refreshContent();
             }
         }
 
@@ -81,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
         super.onResume();
         if (!nowRefreshing) {
             boolean inclSelfposts = prefMgr.getBoolean("include_selfposts", true);
-            if (inclSelfposts != selfPostsIncludedInList){
+            if (inclSelfposts != selfPostsIncludedInList) {
                 refreshContent();
             }
         }
@@ -90,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        Log.d("onSaveInstanceState", "Saving posts: " + (posts == null ? "null" : posts.size()));
         outState.putParcelableArrayList("posts", posts);
     }
 
@@ -130,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
 
             Post[] posts = RedditJsonParser.parseJson(responseBody);
 
-            List<Post> postsList = new ArrayList<>(Arrays.asList(posts));
+            ArrayList<Post> postsList = new ArrayList<>(Arrays.asList(posts));
             boolean inclSelfposts = prefMgr.getBoolean("include_selfposts", true);
             selfPostsIncludedInList = inclSelfposts;
 
@@ -146,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
             }
 
             postAdapter.swap(postsList);
+            this.posts = postsList;
             ((LinearLayoutManager) rv.getLayoutManager()).scrollToPositionWithOffset(0, 0);
 
             nowRefreshing = false;
