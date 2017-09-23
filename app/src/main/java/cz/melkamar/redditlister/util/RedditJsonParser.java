@@ -1,8 +1,8 @@
 package cz.melkamar.redditlister.util;
 
-import model.ExternalPost;
-import model.Post;
-import model.SelfPost;
+import cz.melkamar.redditlister.model.ExternalPost;
+import cz.melkamar.redditlister.model.Post;
+import cz.melkamar.redditlister.model.SelfPost;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

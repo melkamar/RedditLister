@@ -1,16 +1,16 @@
-package adapters;
+package cz.melkamar.redditlister.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import cz.melkamar.redditlister.R;
-import model.ExternalPost;
-import model.Post;
-import model.SelfPost;
-import viewholders.ExternPostViewHolder;
-import viewholders.PostViewHolder;
-import viewholders.SelfpostViewHolder;
+import cz.melkamar.redditlister.model.ExternalPost;
+import cz.melkamar.redditlister.model.Post;
+import cz.melkamar.redditlister.model.SelfPost;
+import cz.melkamar.redditlister.viewholders.ExternPostViewHolder;
+import cz.melkamar.redditlister.viewholders.PostViewHolder;
+import cz.melkamar.redditlister.viewholders.SelfpostViewHolder;
 
 import java.util.List;
 

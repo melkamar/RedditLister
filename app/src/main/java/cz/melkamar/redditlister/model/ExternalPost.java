@@ -1,4 +1,4 @@
-package model;
+package cz.melkamar.redditlister.model;
 
 import android.os.Parcel;
 import cz.melkamar.redditlister.R;

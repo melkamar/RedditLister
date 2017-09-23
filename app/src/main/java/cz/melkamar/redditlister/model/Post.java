@@ -1,8 +1,6 @@
-package model;
+package cz.melkamar.redditlister.model;
 
 import android.os.Parcelable;
-
-import java.io.Serializable;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com) on 17.09.2017 12:34.

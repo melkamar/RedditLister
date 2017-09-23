@@ -1,8 +1,8 @@
-package viewholders;
+package cz.melkamar.redditlister.viewholders;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import model.Post;
+import cz.melkamar.redditlister.model.Post;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com) on 18.09.2017 23:57.

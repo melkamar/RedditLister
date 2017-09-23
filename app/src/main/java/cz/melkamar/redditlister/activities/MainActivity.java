@@ -1,6 +1,6 @@
 package cz.melkamar.redditlister.activities;
 
-import adapters.PostAdapter;
+import cz.melkamar.redditlister.adapters.PostAdapter;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -20,9 +20,9 @@ import android.widget.Toast;
 import cz.melkamar.redditlister.R;
 import cz.melkamar.redditlister.util.RedditJsonParser;
 import cz.melkamar.redditlister.util.RefreshATask;
-import model.ExternalPost;
-import model.Post;
-import model.SelfPost;
+import cz.melkamar.redditlister.model.ExternalPost;
+import cz.melkamar.redditlister.model.Post;
+import cz.melkamar.redditlister.model.SelfPost;
 import org.json.JSONException;
 
 import java.util.ArrayList;

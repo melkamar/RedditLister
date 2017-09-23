@@ -1,6 +1,5 @@
 package cz.melkamar.redditlister.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -13,9 +12,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 import cz.melkamar.redditlister.R;
-import model.SelfPost;
+import cz.melkamar.redditlister.model.SelfPost;
 
 public class SelfPostDetailActivity extends AppCompatActivity {
 

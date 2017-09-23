@@ -1,10 +1,10 @@
-package viewholders;
+package cz.melkamar.redditlister.viewholders;
 
 import android.view.View;
 import android.widget.TextView;
 import cz.melkamar.redditlister.R;
-import model.Post;
-import model.SelfPost;
+import cz.melkamar.redditlister.model.Post;
+import cz.melkamar.redditlister.model.SelfPost;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com) on 18.09.2017 23:55.
