@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.DividerItemDecoration;
@@ -34,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
     RecyclerView rv;
     PostAdapter postAdapter;
     ArrayList<Post> posts;
+
+    SwipeRefreshLayout swipeRefreshLayout;
 
     Snackbar refreshingSnackbar = null; // Keep a reference so that we can dismiss the snackbar when loading finishes
 
@@ -74,6 +77,17 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
 
         postAdapter = new PostAdapter(new ArrayList<Post>(0), this);
         rv.setAdapter(postAdapter);
+
+        /*
+         * Set up SwipeRefreshLayout to refresh content on pull-down action
+         */
+        swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshContent();
+            }
+        });
 
         /*
          * Restoring content, or fetching it from the internet if nothing was saved.
@@ -126,7 +140,6 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.btn_refresh:
-                refreshingSnackbar = showSnackbar("Refreshing...");
                 refreshContent();
                 break;
             case R.id.btn_about:
@@ -143,6 +156,7 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
 
     private void refreshContent() {
 //        new RefreshATask(this).execute("https://www.reddit.com/.json");
+        refreshingSnackbar = showSnackbar("Refreshing...");
         nowRefreshing = true;
         new RefreshATask(this).execute("https://www.reddit.com/r/androiddev/.json");
     }
@@ -183,6 +197,7 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
             showSnackbar("Failed parsing or something.");
         }
         nowRefreshing = false;
+        swipeRefreshLayout.setRefreshing(false);
 
         // If snackbar currently shown, get rid of it
         if (refreshingSnackbar != null) refreshingSnackbar.dismiss();
