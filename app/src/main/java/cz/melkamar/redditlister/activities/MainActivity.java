@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
     Toast toast = null;
     ArrayList<Post> posts;
 
+    Snackbar refreshingSnackbar = null;
+
     private boolean nowRefreshing = false; // Is content currently being refreshed? = is ASyncTask running?
 
     /*
@@ -124,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.btn_refresh:
-                Toast.makeText(this, "Refreshing...", Toast.LENGTH_SHORT).show();
+                refreshingSnackbar = showSnackbar("Refreshing...");
                 refreshContent();
                 break;
             case R.id.btn_about:
@@ -148,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
     @Override
     public void onRefreshFinished(String responseBody) {
         try {
-
+            if (refreshingSnackbar != null) refreshingSnackbar.dismiss();
             Post[] posts = RedditJsonParser.parseJson(responseBody);
 
             ArrayList<Post> postsList = new ArrayList<>(Arrays.asList(posts));
@@ -178,12 +180,14 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
     }
 
 
-    protected void showSnackbar(String text) {
+    protected Snackbar showSnackbar(String text) {
         if (toast != null) {
             toast.cancel();
         }
 
-        Snackbar.make(findViewById(R.id.rv_content), text, Snackbar.LENGTH_LONG).show();
+        Snackbar snackbar = Snackbar.make(findViewById(R.id.rv_content), text, Snackbar.LENGTH_LONG);
+        snackbar.show();
+        return snackbar;
     }
 
     @Override
