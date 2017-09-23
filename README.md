@@ -36,3 +36,12 @@ Used to easily let user set settings, automatically reads/writes to `SharedPrefe
     - Implement `onOptionsItemSelected()`
   - [Menu XML definition](https://github.com/melkamar/android-example-redditlister/blob/master/app/src/main/res/menu/menu_main.xml)
   - [Android Manifest](https://github.com/melkamar/android-example-redditlister/blob/master/app/src/main/AndroidManifest.xml) - implement `parentActivityName` to enable menu-back-arrow navigation.
+
+
+#### Embedded Maps fragment
+The only thing this Activity does is show a map and a button. Button clicks add a random marker to the map. Ez.
+
+See documentation [here](https://developers.google.com/maps/documentation/android-api/map)
+
+  - [XML layout](https://github.com/melkamar/android-example-redditlister/blob/master/app/src/main/res/layout/activity_map.xml)
+  - [MapActivity](https://github.com/melkamar/android-example-redditlister/blob/master/app/src/main/java/cz/melkamar/redditlister/activities/MapActivity.java)
