@@ -3,6 +3,7 @@ package cz.melkamar.redditlister.activities;
 import adapters.PostAdapter;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -32,10 +33,9 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
 
     RecyclerView rv;
     PostAdapter postAdapter;
-    Toast toast = null;
     ArrayList<Post> posts;
 
-    Snackbar refreshingSnackbar = null;
+    Snackbar refreshingSnackbar = null; // Keep a reference so that we can dismiss the snackbar when loading finishes
 
     private boolean nowRefreshing = false; // Is content currently being refreshed? = is ASyncTask running?
 
@@ -147,17 +147,24 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
         new RefreshATask(this).execute("https://www.reddit.com/r/androiddev/.json");
     }
 
+    /**
+     * Callback function for {@link RefreshATask}.
+     * <p>
+     * When content is downloaded from the internet, pass the received payload to this function.
+     *
+     * @param responseBody The HTTP response body.
+     */
     @Override
     public void onRefreshFinished(String responseBody) {
         try {
-            if (refreshingSnackbar != null) refreshingSnackbar.dismiss();
             Post[] posts = RedditJsonParser.parseJson(responseBody);
-
             ArrayList<Post> postsList = new ArrayList<>(Arrays.asList(posts));
-            boolean inclSelfposts = prefMgr.getBoolean("include_selfposts", true);
-            selfPostsIncludedInList = inclSelfposts;
 
-            if (!inclSelfposts) {
+            // Get user preference whether to show selfposts
+            boolean inclSelfposts = prefMgr.getBoolean("include_selfposts", true);
+            selfPostsIncludedInList = inclSelfposts; // Set the member flag var to this value
+
+            if (!inclSelfposts) { // Remove all selfposts from the list
                 ListIterator<Post> iter = postsList.listIterator();
                 while (iter.hasNext()) {
                     Post post = iter.next();
@@ -171,25 +178,33 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
             postAdapter.swap(postsList);
             this.posts = postsList;
             ((LinearLayoutManager) rv.getLayoutManager()).scrollToPositionWithOffset(0, 0);
-
-            nowRefreshing = false;
         } catch (JSONException e) {
             e.printStackTrace();
             showSnackbar("Failed parsing or something.");
         }
+        nowRefreshing = false;
+
+        // If snackbar currently shown, get rid of it
+        if (refreshingSnackbar != null) refreshingSnackbar.dismiss();
     }
 
-
+    /**
+     * Helper method to just show a snackbar and return a reference to it.
+     *
+     * @param text Text to show in the snackbar.
+     * @return Reference to the shown snackbar, so that it may be dismissed.
+     */
     protected Snackbar showSnackbar(String text) {
-        if (toast != null) {
-            toast.cancel();
-        }
-
         Snackbar snackbar = Snackbar.make(findViewById(R.id.rv_content), text, Snackbar.LENGTH_LONG);
         snackbar.show();
         return snackbar;
     }
 
+    /**
+     * Callback method for selfpost-item clicked.
+     *
+     * @param post The post that was clicked in the {@link RecyclerView}.
+     */
     @Override
     public void onSelfPostTitleClick(SelfPost post) {
         Intent intent = new Intent(this, SelfPostDetailActivity.class);
@@ -197,17 +212,18 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
         startActivity(intent);
     }
 
+    /**
+     * Callback method for externalpost-item clicked.
+     *
+     * @param post The post that was clicked in the {@link RecyclerView}.
+     */
     @Override
     public void onExtPostTitleClick(ExternalPost post) {
-//        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(post.getUrl()));
-//        if (intent.resolveActivity(getPackageManager()) != null) {
-//            startActivity(intent);
-//        } else {
-//            showSnackbar("Sorry, no app installed for opening webpages.");
-//        }
-
-        Intent intent = new Intent(this, SelfPostDetailActivity.class);
-        intent.putExtra("post", "something");
-        startActivity(intent);
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(post.getUrl()));
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        } else {
+            showSnackbar("Sorry, no app installed for opening webpages.");
+        }
     }
 }

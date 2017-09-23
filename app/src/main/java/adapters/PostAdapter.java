@@ -18,6 +18,9 @@ import java.util.List;
  * Created by Martin Melka (martin.melka@gmail.com) on 17.09.2017 12:38.
  */
 
+/**
+ *
+ */
 public class PostAdapter extends RecyclerView.Adapter<PostViewHolder>
         implements ExternPostViewHolder.ExternpostClickListener, SelfpostViewHolder.SelfpostClickListener {
     List<Post> data;
