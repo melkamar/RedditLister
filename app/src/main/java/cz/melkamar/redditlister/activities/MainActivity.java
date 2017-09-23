@@ -3,7 +3,6 @@ package cz.melkamar.redditlister.activities;
 import adapters.PostAdapter;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -24,10 +23,8 @@ import model.Post;
 import model.SelfPost;
 import org.json.JSONException;
 
-import java.security.cert.TrustAnchor;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.ListIterator;
 
 public class MainActivity extends AppCompatActivity implements RefreshATask.RefreshTaskListener,
@@ -38,11 +35,16 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
     Toast toast = null;
     ArrayList<Post> posts;
 
+    private boolean nowRefreshing = false; // Is content currently being refreshed? = is ASyncTask running?
+
     /*
+     * Used for handling preferences.
      *
+     * selfPostsIncludedInList marks whether selfposts are currently shown or not.
+     * If this activity is resumed and value of this variable is different to that in SharedPreferences, that
+     * means that the user has changed this setting and we should re-poll the posts list.
      */
     private SharedPreferences prefMgr;
-    private boolean nowRefreshing = false;
     boolean selfPostsIncludedInList = true;
 
     @Override
@@ -50,11 +52,17 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /*
+         * Magic lines to make modern toolbar work.
+         */
         Toolbar toolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
 
         prefMgr = PreferenceManager.getDefaultSharedPreferences(this);
 
+        /*
+         * Setting up RecyclerView, assigning an adapter to it.
+         */
         rv = findViewById(R.id.rv_content);
         LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         rv.setLayoutManager(manager);
@@ -65,7 +73,10 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
         postAdapter = new PostAdapter(new ArrayList<Post>(0), this);
         rv.setAdapter(postAdapter);
 
-        Log.d("savedState:", savedInstanceState+"");
+        /*
+         * Restoring content, or fetching it from the internet if nothing was saved.
+         */
+        Log.d("savedState:", savedInstanceState + "");
         if (savedInstanceState == null) {
             refreshContent();
         } else {
@@ -73,18 +84,20 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
             Log.d("sSaved posts: ", posts == null ? "null" : posts.toString());
             if (posts != null && !posts.isEmpty()) {
                 postAdapter.swap(posts);
+                selfPostsIncludedInList = savedInstanceState.getBoolean("selfposts_included");
             } else {
                 Log.d("sSaved posts: ", "empty, refreshing...");
                 refreshContent();
             }
         }
-
-        selfPostsIncludedInList = prefMgr.getBoolean("include_selfposts", true);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        /*
+         * If we are not currently refreshing content, compare if selfposts are shown to whether they should be shown.
+         */
         if (!nowRefreshing) {
             boolean inclSelfposts = prefMgr.getBoolean("include_selfposts", true);
             if (inclSelfposts != selfPostsIncludedInList) {
@@ -98,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
         super.onSaveInstanceState(outState);
         Log.d("onSaveInstanceState", "Saving posts: " + (posts == null ? "null" : posts.size()));
         outState.putParcelableArrayList("posts", posts);
+        outState.putBoolean("selfposts_included", selfPostsIncludedInList);
     }
 
     @Override
@@ -114,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
                 refreshContent();
                 break;
             case R.id.btn_about:
-                Toast.makeText(this, "Made by zmrd", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Made by Martin Melka.", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.btn_settings:
                 startActivity(new Intent(MainActivity.this, SettingsActivity.class));
