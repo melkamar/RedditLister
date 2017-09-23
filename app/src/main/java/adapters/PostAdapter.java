@@ -73,6 +73,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder>
     }
 
     public void swap(List<Post> newData) {
+        if (newData == null || newData.isEmpty()) return;
         data.clear();
         data.addAll(newData);
         this.notifyDataSetChanged();

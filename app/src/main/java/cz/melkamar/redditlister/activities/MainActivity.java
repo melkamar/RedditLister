@@ -2,10 +2,12 @@ package cz.melkamar.redditlister.activities;
 
 import adapters.PostAdapter;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,9 +24,11 @@ import model.Post;
 import model.SelfPost;
 import org.json.JSONException;
 
+import java.security.cert.TrustAnchor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ListIterator;
 
 public class MainActivity extends AppCompatActivity implements RefreshATask.RefreshTaskListener,
         PostAdapter.ListItemClickListener {
@@ -34,6 +38,11 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
     Toast toast = null;
     ArrayList<Post> posts;
 
+    private SharedPreferences prefMgr;
+    private boolean nowRefreshing = false;
+
+    boolean selfPostsIncludedInList = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
 
         Toolbar toolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
+
+        prefMgr = PreferenceManager.getDefaultSharedPreferences(this);
 
         rv = findViewById(R.id.rv_content);
         LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -57,7 +68,22 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
             refreshContent();
         } else {
             posts = savedInstanceState.getParcelableArrayList("posts");
-            postAdapter.swap(posts);
+            if (posts != null) {
+                postAdapter.swap(posts);
+            }
+        }
+
+        selfPostsIncludedInList = prefMgr.getBoolean("include_selfposts", true);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!nowRefreshing) {
+            boolean inclSelfposts = prefMgr.getBoolean("include_selfposts", true);
+            if (inclSelfposts != selfPostsIncludedInList){
+                refreshContent();
+            }
         }
     }
 
@@ -93,8 +119,9 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
     }
 
     private void refreshContent() {
-        new RefreshATask(this).execute("https://www.reddit.com/.json");
-
+//        new RefreshATask(this).execute("https://www.reddit.com/.json");
+        nowRefreshing = true;
+        new RefreshATask(this).execute("https://www.reddit.com/r/androiddev/.json");
     }
 
     @Override
@@ -102,8 +129,26 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
         try {
 
             Post[] posts = RedditJsonParser.parseJson(responseBody);
-            postAdapter.swap(Arrays.asList(posts));
+
+            List<Post> postsList = new ArrayList<>(Arrays.asList(posts));
+            boolean inclSelfposts = prefMgr.getBoolean("include_selfposts", true);
+            selfPostsIncludedInList = inclSelfposts;
+
+            if (!inclSelfposts) {
+                ListIterator<Post> iter = postsList.listIterator();
+                while (iter.hasNext()) {
+                    Post post = iter.next();
+                    if (post.getType() == R.id.post_self) {
+                        iter.remove();
+                    }
+
+                }
+            }
+
+            postAdapter.swap(postsList);
             ((LinearLayoutManager) rv.getLayoutManager()).scrollToPositionWithOffset(0, 0);
+
+            nowRefreshing = false;
         } catch (JSONException e) {
             e.printStackTrace();
             showSnackbar("Failed parsing or something.");
