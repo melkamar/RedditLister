@@ -3,6 +3,7 @@
 
     <item android:title="Refresh" android:id="@+id/btn_refresh" android:icon="@drawable/refresh"
           app:showAsAction="never"/>
+    <item android:title="Show map" app:showAsAction="never" android:id="@+id/btn_show_map"/>
     <item android:title="Settings" app:showAsAction="never" android:id="@+id/btn_settings"/>
     <item android:title="About" app:showAsAction="never" android:id="@+id/btn_about"/>
 </menu>

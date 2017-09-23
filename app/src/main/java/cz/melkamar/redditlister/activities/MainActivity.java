@@ -148,6 +148,8 @@ public class MainActivity extends AppCompatActivity implements RefreshATask.Refr
             case R.id.btn_settings:
                 startActivity(new Intent(MainActivity.this, SettingsActivity.class));
                 break;
+            case R.id.btn_show_map:
+                startActivity(new Intent(MainActivity.this, MapActivity.class));
             default:
                 break;
         }
